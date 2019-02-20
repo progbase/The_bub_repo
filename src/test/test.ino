@@ -1,34 +1,3 @@
-// MPU-6050 Accelerometer + Gyro
-// -----------------------------
-//
-// By arduino.cc user "Krodal".
-// June 2012
-// Open Source / Public Domain
-//
-// Using Arduino 1.0.1
-// It will not work with an older version, 
-// since Wire.endTransmission() uses a parameter 
-// to hold or release the I2C bus.
-//
-// Documentation:
-// - The InvenSense documents:
-//   - "MPU-6000 and MPU-6050 Product Specification",
-//     PS-MPU-6000A.pdf
-//   - "MPU-6000 and MPU-6050 Register Map and Descriptions",
-//     RM-MPU-6000A.pdf or RS-MPU-6000A.pdf
-//   - "MPU-6000/MPU-6050 9-Axis Evaluation Board User Guide"
-//     AN-MPU-6000EVB.pdf
-// 
-// The accuracy is 16-bits.
-//
-// Temperature sensor from -40 to +85 degrees Celsius
-//   340 per degrees, -512 at 35 degrees.
-//
-// At power-up, all registers are zero, except these two:
-//      Register 0x6B (PWR_MGMT_2) = 0x40  (I read zero).
-//      Register 0x75 (WHO_AM_I)   = 0x68.
-// 
-
 #include <Wire.h>
 
 
@@ -776,72 +745,13 @@ void calibrate_sensors() {
 }
 
 
-void setup()
-{      
-  int error;
-  uint8_t c;
 
-
-  Serial.begin(38400);
-  /*
-  Serial.println(F("InvenSense MPU-6050"));
-  Serial.println(F("June 2012"));
-  */
-  // Initialize the 'Wire' class for the I2C-bus.
-  Wire.begin();
-
-
-  // default at power-up:
-  //    Gyro at 250 degrees second
-  //    Acceleration at 2g
-  //    Clock source at internal 8MHz
-  //    The device is in sleep mode.
-  //
-
-  error = MPU6050_read (MPU6050_WHO_AM_I, &c, 1);
-  /*
-  Serial.print(F("WHO_AM_I : "));
-  Serial.print(c,HEX);
-  Serial.print(F(", error = "));
-  Serial.println(error,DEC);
-  */
-
-  // According to the datasheet, the 'sleep' bit
-  // should read a '1'. But I read a '0'.
-  // That bit has to be cleared, since the sensor
-  // is in sleep mode at power-up. Even if the
-  // bit reads '0'.
-  error = MPU6050_read (MPU6050_PWR_MGMT_2, &c, 1);
-  /*
-  Serial.print(F("PWR_MGMT_2 : "));
-  Serial.print(c,HEX);
-  Serial.print(F(", error = "));
-  Serial.println(error,DEC);
-  */
-
-  // Clear the 'sleep' bit to start the sensor.
-  MPU6050_write_reg (MPU6050_PWR_MGMT_1, 0);
-  
-  //Initialize the angles
-  calibrate_sensors();  
-  set_last_read_angle_data(millis(), 0, 0, 0, 0, 0, 0);
-}
 
 
 struct angles {
   float x, y, z;
 };
 
-void loop()
-{
-    struct angles angles = update_gyro(); 
-    Serial.print(angles.x, 2);
-    Serial.print(F(","));
-    Serial.print(angles.y, 2);
-    Serial.print(F(","));
-    Serial.print(angles.z, 2);
-    Serial.println(F(""));
-}
 
 struct angles update_gyro() {
   int error;
@@ -1019,4 +929,189 @@ int MPU6050_write_reg(int reg, uint8_t data)
   error = MPU6050_write(reg, &data, 1);
 
   return (error);
+}
+
+
+
+
+
+// подключите пины контроллера к цифровым пинам Arduino
+
+// первый двигатель
+
+int enA = 10;
+
+int in1 = 9;
+
+int in2 = 8;
+
+// второй двигатель
+
+int enB = 5;
+
+int in3 = 7;
+
+int in4 = 6;
+
+void setup()
+
+{
+
+  int error;
+  uint8_t c;
+
+
+  Serial.begin(38400);
+  /*
+  Serial.println(F("InvenSense MPU-6050"));
+  Serial.println(F("June 2012"));
+  */
+  // Initialize the 'Wire' class for the I2C-bus.
+  Wire.begin();
+
+
+  // default at power-up:
+  //    Gyro at 250 degrees second
+  //    Acceleration at 2g
+  //    Clock source at internal 8MHz
+  //    The device is in sleep mode.
+  //
+
+  error = MPU6050_read (MPU6050_WHO_AM_I, &c, 1);
+  /*
+  Serial.print(F("WHO_AM_I : "));
+  Serial.print(c,HEX);
+  Serial.print(F(", error = "));
+  Serial.println(error,DEC);
+  */
+
+  // According to the datasheet, the 'sleep' bit
+  // should read a '1'. But I read a '0'.
+  // That bit has to be cleared, since the sensor
+  // is in sleep mode at power-up. Even if the
+  // bit reads '0'.
+  error = MPU6050_read (MPU6050_PWR_MGMT_2, &c, 1);
+  /*
+  Serial.print(F("PWR_MGMT_2 : "));
+  Serial.print(c,HEX);
+  Serial.print(F(", error = "));
+  Serial.println(error,DEC);
+  */
+
+  // Clear the 'sleep' bit to start the sensor.
+  MPU6050_write_reg (MPU6050_PWR_MGMT_1, 0);
+  
+  //Initialize the angles
+  calibrate_sensors();  
+  set_last_read_angle_data(millis(), 0, 0, 0, 0, 0, 0);
+
+// инициализируем все пины для управления двигателями как outputs
+
+pinMode(enA, OUTPUT);
+
+pinMode(enB, OUTPUT);
+
+pinMode(in1, OUTPUT);
+
+pinMode(in2, OUTPUT);
+
+pinMode(in3, OUTPUT);
+
+pinMode(in4, OUTPUT);
+
+}
+void moveStepper(struct angles angles)
+{
+  int speedL;
+  int speedR;
+  speedL = map(angles.x, -90, 90, -255, 255);
+  speedR = map(angles.x, -90, 90, -255, 255);
+  int k = map(angles.y, -90, 90, -255, 255);
+  int sL;
+  if(speedL>=0)
+  sL=1;
+  else
+  sL=-1;
+  int sR;
+  if(speedR>=0)
+  sR=1;
+  else
+  sR=-1;
+  if(k>=0)
+  {
+    speedL = sL*sqrt(speedL*speedL + k*k);
+  }
+  else
+  {
+    speedR = sR*sqrt(speedR*speedR + k*k);
+  }
+  if(speedL>255)
+  speedL=254;
+  if(speedR>255)
+  speedR=254;
+  
+  if(speedL >= 0) {
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    analogWrite(enA, speedL);
+  } else {
+    speedL=255-speedL;
+      digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  analogWrite(enA, speedL);      
+  }
+
+  if (speedR >= 0) {
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    analogWrite(enB, speedR);
+  } else {
+    speedR=255-speedR;
+      digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+  analogWrite(enB, speedR);    
+  }
+
+  
+}
+
+
+void loop()
+
+{
+
+  struct angles angles = update_gyro(); 
+    Serial.print(angles.x); Serial.print(" ");
+ 
+    
+//    Serial.print(angles.y, 2);
+//    Serial.print(F(","));
+//    Serial.print(angles.z, 2);
+//    Serial.println(F(""));
+
+
+
+boolean flag = 0;
+int local_speed = 0;
+
+
+int speedForward = map(angles.x, -90, 90, -255, 255);
+int speedSide = map(angles.y, -90, 90, -255, 255);
+Serial.println(speedForward);
+//if(speed>0)
+//{
+//  if(speed>200)
+//  speed=200;
+//  forward();
+//}
+//else
+//{
+//  if(speed<-200)
+//  speed=-200;
+//  speed=speed*-1;
+//  back();
+//
+//}
+moveStepper(angles);
+delay(100);
 }
