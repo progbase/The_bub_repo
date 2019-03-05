@@ -1,4 +1,6 @@
 // MPU-6050 Accelerometer + Gyro
+#ifndef GYRO_H
+#define GYRO_H
 #include <Wire.h>
 #define MPU6050_AUX_VDDIO          0x01   // R/W
 #define MPU6050_SMPLRT_DIV         0x19   // R/W
@@ -661,3 +663,4 @@ int MPU6050_read(int start, uint8_t *buffer, int size);
 int MPU6050_write(int start, const uint8_t *pData, int size);
 
 int MPU6050_write_reg(int reg, uint8_t data);
+#endif
