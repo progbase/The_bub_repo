@@ -45,6 +45,7 @@ void setup()
 void _move_stepper(int speedL, int speedR) {
     if (speedR == 0) speedR = 1;
     if (speedL == 0) speedL = 1;
+    //speedL = -speedL;
     if(speedL >= 0) {
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
@@ -94,7 +95,8 @@ void loop()
     Serial.print(angles.z, 2);
     Serial.println(F(""));
 
-//    _move_stepper(240, 240);
-  _move_stepper_r();
+  //_move_stepper(240, 240);
+  //_move_stepper_f();
+  _move_stepper_l();
     
 }
