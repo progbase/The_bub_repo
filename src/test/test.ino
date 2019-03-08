@@ -162,6 +162,55 @@ void _move_stepper_b(){
     #define draw_mode 1
     int mode = free_mode;
 
+void moveStepper(int x, int y)
+{
+  int speedL;
+  int speedR;
+  speedL = map(x, -90, 90, -255, 255);
+  speedR = map(x, -90, 90, -254, 254);
+  float k = map(y, -90, 90, -99, 99);
+  if(k>0)
+  k=100-k;
+  else
+  k=-100-k;
+  k=k/100.0;
+  if(k>=0)
+  {
+    speedL = k*speedL;
+  }
+  else
+  {
+    k=-k;
+    speedR = k*speedR;
+  }
+  if(speedL>255)
+  speedL=254;
+  if(speedR>255)
+  speedR=254;
+  
+//  if(speedL >= 0) {
+//    digitalWrite(in1, HIGH);
+//    digitalWrite(in2, LOW);
+//    analogWrite(enA, speedL);
+//  } else {
+//    speedL=255-speedL;
+//      digitalWrite(in1, LOW);
+//  digitalWrite(in2, HIGH);
+//  analogWrite(enA, speedL);      
+//  }
+//
+//  if (speedR >= 0) {
+//    digitalWrite(in3, HIGH);
+//    digitalWrite(in4, LOW);
+//    analogWrite(enB, speedR);
+//  } else {
+//    speedR=255-speedR;
+//      digitalWrite(in3, LOW);
+//  digitalWrite(in4, HIGH);
+//  analogWrite(enB, speedR);    
+//  }
+  _move_stepper(speedR, speedL);
+}
 void loop()
 {
     
@@ -185,34 +234,36 @@ void loop()
         else if (abs(x) < 20 && y < -20)
           _move_stepper_l();
     } else {
-        int forw_back = map(x, -90, 90, -255, 255);
-        int left_right = map(y, -90, 90, -255, 255);
-
-//        Serial.println(forw_back); Serial.println(left_right);
-        Serial.write("\n");
-        delay(20);
-        int l = 0;
-        int r = 0;
-        if (y > 0){
-          l = forw_back;
-          if (l < 255/2) {
-              r = (255-l) * cos(radians(left_right));
-          }
-          
-          r = l * cos(radians(left_right));
-        } else {
-          r = forw_back;
-          if (r < 255/2) {
-            l = (255-r) * cos(radians(left_right));
-          } else 
-            l = r * cos(radians(left_right));
-        }
-        Serial.println(l);
-        Serial.println(r);
-        _move_stepper(l, r);
-//        Serial.print(left_speed); Serial.println("  ");
-//        Serial.println(right_speed); Serial.println("  ");
+      moveStepper(x, y);
     }
+//        int forw_back = map(x, -90, 90, -255, 255);
+//        int left_right = map(y, -90, 90, -255, 255);
+//
+////        Serial.println(forw_back); Serial.println(left_right);
+//        Serial.write("\n");
+//        delay(20);
+//        int l = 0;
+//        int r = 0;
+//        if (y > 0){
+//          l = forw_back;
+//          if (l < 255/2) {
+//              r = (255-l) * cos(radians(left_right));
+//          }
+//          
+//          r = l * cos(radians(left_right));
+//        } else {
+//          r = forw_back;
+//          if (r < 255/2) {
+//            l = (255-r) * cos(radians(left_right));
+//          } else 
+//            l = r * cos(radians(left_right));
+//        }
+//        Serial.println(l);
+//        Serial.println(r);
+//        _move_stepper(l, r);
+////        Serial.print(left_speed); Serial.println("  ");
+////        Serial.println(right_speed); Serial.println("  ");
+    
     
   
     
