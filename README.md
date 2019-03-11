@@ -5,7 +5,7 @@ Our project:
 ### *A hand controlled car with ability to draw*
 
 Members:
- + PO\team_lead - Andrii Koval
+ + PO\team_Lead - Andrii Koval
  + QA_Lead - Daryna Matiiuk
  + QA - Anna Tychenko
  + Scrum_master - Roman Marianenko
@@ -24,5 +24,5 @@ Members:
 
 [Backlog](https://docs.google.com/spreadsheets/d/1Hhfbvf0mXmCzQUOZNcOy67RbeIWsSCX_6Wwh1PhIGYA/edit#gid=0)
 
-## *First sprint*
-[First sprint presentation](https://docs.google.com/presentation/d/1b6JCxygVZsvtKI6ng-KrT1nKm-Lxusb0o92Wa9wdfuI/edit?usp=sharing)
+#### *First sprint*
+[Presentation](https://docs.google.com/presentation/d/1b6JCxygVZsvtKI6ng-KrT1nKm-Lxusb0o92Wa9wdfuI/edit?usp=sharing)
