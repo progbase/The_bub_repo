@@ -23,3 +23,6 @@ Members:
 [Presentation](https://docs.google.com/presentation/d/1z9gzdR2Pk6V5ziHXGhxxBeBjqXxSyj6s1Ivte_u5y_Y/edit?usp=sharing)
 
 [Backlog](https://docs.google.com/spreadsheets/d/1Hhfbvf0mXmCzQUOZNcOy67RbeIWsSCX_6Wwh1PhIGYA/edit#gid=0)
+
+## *First sprint*
+[First sprint presentation](https://docs.google.com/presentation/d/1b6JCxygVZsvtKI6ng-KrT1nKm-Lxusb0o92Wa9wdfuI/edit?usp=sharing)
