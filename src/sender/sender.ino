@@ -2,7 +2,7 @@
 
 #include "radios.h"
 
-
+int flexSensorPin = A0; //analog pin 0
 
 void setup()
 {     
@@ -37,6 +37,8 @@ radioSetup();
 void loop()
 {
     struct angles angles = update_gyro(); 
+    int flexSensorReading = analogRead(flexSensorPin); 
+    Serial.write("Flex -> ");  Serial.println(flexSensorReading);
     transmit_data[0] = angles.x;
     transmit_data[1] = angles.y;
     Serial.print(angles.x);

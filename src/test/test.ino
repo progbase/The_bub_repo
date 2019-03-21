@@ -78,47 +78,24 @@ void _move_stepper(int speedL, int speedR) {
   }
 }
 
-/*
-   Пример скетча "управление с телеметрией", то есть модуль ПЕРЕДАТЧИК
-   шлёт на ПРИЁМНИК команды управления, ПРИЁМНИК при получении пакета данных
-   отправляет ПЕРЕДАТЧИКУ пакет телеметрии (какие-то свои данные). ПЕРЕДАТЧИК
-   эти данные принимает. Вот такие пироги. Также в этом примере реализован 
-   расчёт RSSI (процент ошибок связи), на основании которого можно судить о 
-   качестве связи между модулями.
-*/
 
-// ЭТО СКЕТЧ ПРИЁМНИКА!!!
-
-//--------------------- НАСТРОЙКИ ----------------------
 #define CH_NUM 0x60   // номер канала (должен совпадать с передатчиком)
-//--------------------- НАСТРОЙКИ ----------------------
 
-//--------------------- ДЛЯ РАЗРАБОТЧИКОВ -----------------------
-// УРОВЕНЬ МОЩНОСТИ ПЕРЕДАТЧИКА
-// На выбор RF24_PA_MIN, RF24_PA_LOW, RF24_PA_HIGH, RF24_PA_MAX
-#define SIG_POWER RF24_PA_MIN
-
-// СКОРОСТЬ ОБМЕНА
-// На выбор RF24_2MBPS, RF24_1MBPS, RF24_250KBPS
-// должна быть одинакова на приёмнике и передатчике!
-// при самой низкой скорости имеем самую высокую чувствительность и дальность!!
-// ВНИМАНИЕ!!! enableAckPayload НЕ РАБОТАЕТ НА СКОРОСТИ 250 kbps!
 #define SIG_SPEED RF24_1MBPS
-//--------------------- ДЛЯ РАЗРАБОТЧИКОВ -----------------------
 
-//--------------------- БИБЛИОТЕКИ ----------------------
+
 
 RF24 radio(9, 10);   // "создать" модуль на пинах 9 и 10 для НАНО/УНО
 //RF24 radio(9, 53); // для МЕГИ
-//--------------------- БИБЛИОТЕКИ ----------------------
 
-//--------------------- ПЕРЕМЕННЫЕ ----------------------
+
+
 byte pipeNo;
 byte address[][6] = {"1Node", "2Node", "3Node", "4Node", "5Node", "6Node"}; // возможные номера труб
 
 int recieved_data[6];         // массив принятых данных
 int telemetry[2];             // массив данных телеметрии (то что шлём на передатчик)
-//--------------------- ПЕРЕМЕННЫЕ ----------------------
+
 
 
 void radioSetup() {         // настройка радио
@@ -138,55 +115,165 @@ void radioSetup() {         // настройка радио
   radio.startListening();  // начинаем слушать эфир, мы приёмный модуль
 }
 
-int small_speed = 40;
+//int small_speed = 40;
+//
+//void _move_stepper_l(){
+//  _move_stepper(small_speed, -small_speed);
+//}
+//
+//void _move_stepper_r(){
+//  _move_stepper(-small_speed, small_speed);
+//}
+//
+//void _move_stepper_f(){
+//  _move_stepper(small_speed, small_speed);
+//}
+//
+//void _move_stepper_b(){
+//  _move_stepper(-small_speed, -small_speed);
+//}
 
-void _move_stepper_l(){
-  _move_stepper(small_speed, -small_speed);
-}
+    
 
-void _move_stepper_r(){
-  _move_stepper(-small_speed, small_speed);
-}
-
-void _move_stepper_f(){
-  _move_stepper(small_speed, small_speed);
-}
-
-void _move_stepper_b(){
-  _move_stepper(-small_speed, -small_speed);
-}
-
-    int x = 0;
-    int y = 0;
-    #define free_mode 0
-    #define draw_mode 1
-    int mode = free_mode;
-
-void moveStepper(int x, int y)
+void moveStepper_free(int x, int y)
 {
   int speedL;
   int speedR;
-  speedL = map(x, -90, 90, -255, 255);
-  speedR = map(x, -90, 90, -254, 254);
-  float k = map(y, -90, 90, -99, 99);
-  if(k>0)
-  k=100-k;
-  else
-  k=-100-k;
-  k=k/100.0;
-  if(k>=0)
-  {
-    speedL = k*speedL;
+  float x_fl = x;
+  float y_fl = y;
+  float n = x_fl / 100;
+  float k = y_fl / 25;
+  if (x > -20 && x < 20) {
+    if (y > 10) {
+      speedR = 100;
+      speedL = -100;
+    } else if (y < -10) {
+      speedL = 100;
+      speedR = -100;
+    } else {
+       speedL = 0;
+       speedR = 0;
+    }
+  } else if (x >= 20) {
+      if (y > 10) {
+        speedR = 400 * n;
+        speedL = 200 * n / 4;
+      } else if (y < -10) {
+        speedL = 200 * n;
+        speedR = 200 * n / 4;
+      } else {
+       speedL = 200 * n;
+       speedR = 200 * n;
+      }
+  } else if (x <= -20) {
+      if (y > 10) {
+        speedR = 200 * n / 4;
+        speedL = 400 * n;
+      } else if (y < -10) {
+        speedL = 200 * n / 4;
+        speedR = 400 * n;
+      } else {
+       speedL = 200 * n;
+       speedR = 200 * n;
+      }
   }
-  else
-  {
-    k=-k;
-    speedR = k*speedR;
+//  speedL = map(x, -55, 115, -255, 255);
+//  speedR = map(x, -55, 115, -254, 254);
+//  float k = 0;
+//  if (x >= 40 || x <= -40) {
+//    float k = map(y, -30, 50, -99, 99);
+//  } else {
+//    float k = map(y, -80, 80, -99, 99);
+//  }
+//  float n = k;
+//  if(k>0)
+//  k=100-k;
+//  else
+//  k=-100-k;
+//  k=k/100.0;
+//  if(k>=0)
+//  {
+//    speedL = k*speedL;
+//  }
+//  else
+//  {
+//    k=-k;
+//    speedR = k*speedR;
+//  }
+//  if(speedL>255)
+//  speedL=254;
+//  if(speedR>255)
+//  speedR=254;
+//  if (n > 99) {
+//    speedR =  - 120;
+//    speedL = 120;
+//  } else if (n < -99) {
+//    speedL =  - 120;
+//    speedR = 120;
+//  }
+
+  
+  _move_stepper(speedR, speedL);
+}
+
+void moveStepper_draw(int x, int y)
+{
+  int speedL;
+  int speedR;
+  if (x > -20 && x < 20) {
+    if (y > 10) {
+      speedR = 100;
+      speedL = -100;
+    } else if (y < -10) {
+      speedL = 100;
+      speedR = -100;
+    } else {
+       speedL = 0;
+       speedR = 0;
+    }
+  } else if (x >= 20) {
+      
+       speedL = 100;
+       speedR = 100;
+  } else if (x <= -20) {
+      
+       speedL = -100;
+       speedR = -100;
   }
-  if(speedL>255)
-  speedL=254;
-  if(speedR>255)
-  speedR=254;
+//  speedL = map(x, -55, 115, -255, 255);
+//  speedR = map(x, -55, 115, -254, 254);
+//  float k = 0;
+//  if (x >= 40 || x <= -40) {
+//    float k = map(y, -30, 50, -99, 99);
+//  } else {
+//    float k = map(y, -80, 80, -99, 99);
+//  }
+//  float n = k;
+//  if(k>0)
+//  k=100-k;
+//  else
+//  k=-100-k;
+//  k=k/100.0;
+//  if(k>=0)
+//  {
+//    speedL = k*speedL;
+//  }
+//  else
+//  {
+//    k=-k;
+//    speedR = k*speedR;
+//  }
+//  if(speedL>255)
+//  speedL=254;
+//  if(speedR>255)
+//  speedR=254;
+//  if (n > 99) {
+//    speedR =  - 120;
+//    speedL = 120;
+//  } else if (n < -99) {
+//    speedL =  - 120;
+//    speedR = 120;
+//  }
   
 //  if(speedL >= 0) {
 //    digitalWrite(in1, HIGH);
@@ -209,55 +296,36 @@ void moveStepper(int x, int y)
 //  digitalWrite(in4, HIGH);
 //  analogWrite(enB, speedR);    
 //  }
+
+  
   _move_stepper(speedR, speedL);
 }
+    int x = 0;
+    int y = 0;
+    #define free_mode 0
+    #define draw_mode 1
+    int mode = draw_mode;
 void loop()
 {
     
     while (radio.available(&pipeNo)) {                                 // слушаем эфир
     radio.read( &recieved_data, sizeof(recieved_data));              // чиатем входящий сигнал
 //    Serial.print(recieved_data[0]);
-    y = recieved_data[0];
-    x = recieved_data[1];
+      y = recieved_data[0];
+      x = recieved_data[1];
 //        Serial.print("    ");
 //    Serial.println(recieved_data[1]);
 
     }
 
-    if (mode == draw_mode){
-        if (x > 20 && abs(y) < 20) 
-          _move_stepper_f();
-        else if (x < -20 && abs(y) < 20) 
-          _move_stepper_b();
-        else if (abs(x) < 20 && y > 20)
-          _move_stepper_r();
-        else if (abs(x) < 20 && y < -20)
-          _move_stepper_l();
+    if (mode == free_mode){
+          moveStepper_free(x, y);
     } else {
-      moveStepper(x, y);
+      moveStepper_draw(x, y);
     }
 //        int forw_back = map(x, -90, 90, -255, 255);
 //        int left_right = map(y, -90, 90, -255, 255);
 //
-////        Serial.println(forw_back); Serial.println(left_right);
-//        Serial.write("\n");
-//        delay(20);
-//        int l = 0;
-//        int r = 0;
-//        if (y > 0){
-//          l = forw_back;
-//          if (l < 255/2) {
-//              r = (255-l) * cos(radians(left_right));
-//          }
-//          
-//          r = l * cos(radians(left_right));
-//        } else {
-//          r = forw_back;
-//          if (r < 255/2) {
-//            l = (255-r) * cos(radians(left_right));
-//          } else 
-//            l = r * cos(radians(left_right));
-//        }
 //        Serial.println(l);
 //        Serial.println(r);
 //        _move_stepper(l, r);
