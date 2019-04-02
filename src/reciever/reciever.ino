@@ -38,7 +38,7 @@ void setup()
   error = MPU6050_read (MPU6050_WHO_AM_I, &c, 1);
   error = MPU6050_read (MPU6050_PWR_MGMT_2, &c, 1);
   MPU6050_write_reg (MPU6050_PWR_MGMT_1, 0);
-  //calibrate_sensors();  
+
   set_last_read_angle_data(millis(), 0, 0, 0, 0, 0, 0);
   // инициализируем все пины для управления двигателями как outputs
 
@@ -55,14 +55,10 @@ void setup()
   pinMode(in4, OUTPUT);
 }
 
-void _move_stepper(int speedL, int speedR) {
-    if (speedR == 0) speedR = 1;
-    if (speedL == 0) speedL = 1;
-    int tmp = speedR;
-    speedR = speedL;
-    speedL = tmp;
-    //speedL = -speedL;
-    if(speedL >= 0) {
+void _move_stepper(int speedR, int speedL) {
+  if (speedR == 0) speedR = 1;
+  if (speedL == 0) speedL = 1;
+  if(speedL >= 0) {
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
     analogWrite(enA, speedL);
@@ -163,14 +159,15 @@ void _move_stepper_b(){
   _move_stepper(-small_speed, -small_speed);
 }
 
-    int x = 0;
-    int y = 0;
-    #define free_mode 0
-    #define draw_mode 1
-    int mode = free_mode;
+// @todo description of this
+int x = 0;
+int y = 0;
+#define free_mode 0
+#define draw_mode 1
+int mode = free_mode;
+// end
 
-void moveStepper(int x, int y)
-{
+void moveStepper(int x, int y) {
   int speedL;
   int speedR;
   float x_fl = x;
@@ -185,95 +182,37 @@ void moveStepper(int x, int y)
       speedL = 100;
       speedR = -100;
     } else {
-       speedL = 0;
-       speedR = 0;
+      speedL = 0;
+      speedR = 0;
     }
   } else if (x >= 20) {
-      if (y > 10) {
-        speedR = 400 * n;
-        speedL = 200 * n / 4;
-      } else if (y < -10) {
-        speedL = 200 * n;
-        speedR = 200 * n / 4;
-      } else {
-       speedL = 200 * n;
-       speedR = 200 * n;
-      }
+    if (y > 10) {
+      speedR = 400 * n;
+      speedL = 200 * n / 8;
+    } else if (y < -10) {
+      speedL = 200 * n;
+      speedR = 200 * n / 8;
+    } else {
+     speedL = 200 * n;
+     speedR = 200 * n;
+    }
   } else if (x <= -20) {
-      if (y > 10) {
-        speedR = 200 * n / 4;
-        speedL = 400 * n;
-      } else if (y < -10) {
-        speedL = 200 * n / 4;
-        speedR = 400 * n;
-      } else {
-       speedL = 200 * n;
-       speedR = 200 * n;
-      }
-  }
-//  speedL = map(x, -55, 115, -255, 255);
-//  speedR = map(x, -55, 115, -254, 254);
-//  float k = 0;
-//  if (x >= 40 || x <= -40) {
-//    float k = map(y, -30, 50, -99, 99);
-//  } else {
-//    float k = map(y, -80, 80, -99, 99);
-//  }
-//  float n = k;
-//  if(k>0)
-//  k=100-k;
-//  else
-//  k=-100-k;
-//  k=k/100.0;
-//  if(k>=0)
-//  {
-//    speedL = k*speedL;
-//  }
-//  else
-//  {
-//    k=-k;
-//    speedR = k*speedR;
-//  }
-//  if(speedL>255)
-//  speedL=254;
-//  if(speedR>255)
-//  speedR=254;
-//  if (n > 99) {
-//    speedR =  - 120;
-//    speedL = 120;
-//  } else if (n < -99) {
-//    speedL =  - 120;
-//    speedR = 120;
-//  }
-  
-  if(speedL >= 0) {
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, LOW);
-    analogWrite(enA, speedL);
-  } else {
-    speedL=255-speedL;
-      digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  analogWrite(enA, speedL);      
+    if (y > 10) {
+      speedR = 200 * n / 8;
+      speedL = 400 * n;
+    } else if (y < -10) {
+      speedL = 200 * n / 8;
+      speedR = 400 * n;
+    } else {
+     speedL = 200 * n;
+     speedR = 200 * n;
+    }
   }
 
-  if (speedR >= 0) {
-    digitalWrite(in3, HIGH);
-    digitalWrite(in4, LOW);
-    analogWrite(enB, speedR);
-  } else {
-    speedR=255-speedR;
-      digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
-  analogWrite(enB, speedR);    
-  }
-
-  
-  //_move_stepper(speedR, speedL);
+  _move_stepper(speedR, speedL);
 }
 
-void moveStepper_draw(int x, int y)
-{
+void moveStepper_draw(int x, int y) {
   int speedL;
   int speedR;
   if (x > -20 && x < 20) {
@@ -284,150 +223,50 @@ void moveStepper_draw(int x, int y)
       speedL = 100;
       speedR = -100;
     } else {
-       speedL = 0;
-       speedR = 0;
+      speedL = 0;
+      speedR = 0;
     }
   } else if (x >= 20) {
-      
-       speedL = 100;
-       speedR = 100;
+    speedL = 100;
+    speedR = 100;
   } else if (x <= -20) {
-      
-       speedL = -100;
-       speedR = -100;
+    speedL = -100;
+    speedR = -100;
   }
-//  speedL = map(x, -55, 115, -255, 255);
-//  speedR = map(x, -55, 115, -254, 254);
-//  float k = 0;
-//  if (x >= 40 || x <= -40) {
-//    float k = map(y, -30, 50, -99, 99);
-//  } else {
-//    float k = map(y, -80, 80, -99, 99);
-//  }
-//  float n = k;
-//  if(k>0)
-//  k=100-k;
-//  else
-//  k=-100-k;
-//  k=k/100.0;
-//  if(k>=0)
-//  {
-//    speedL = k*speedL;
-//  }
-//  else
-//  {
-//    k=-k;
-//    speedR = k*speedR;
-//  }
-//  if(speedL>255)
-//  speedL=254;
-//  if(speedR>255)
-//  speedR=254;
-//  if (n > 99) {
-//    speedR =  - 120;
-//    speedL = 120;
-//  } else if (n < -99) {
-//    speedL =  - 120;
-//    speedR = 120;
-//  }
   
-  if(speedL >= 0) {
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, LOW);
-    analogWrite(enA, speedL);
-  } else {
-    speedL=255-speedL;
-      digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  analogWrite(enA, speedL);      
-  }
-
-  if (speedR >= 0) {
-    digitalWrite(in3, HIGH);
-    digitalWrite(in4, LOW);
-    analogWrite(enB, speedR);
-  } else {
-    speedR=255-speedR;
-      digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
-  analogWrite(enB, speedR);    
-  }
-
-  
-  //_move_stepper(speedR, speedL);
+  _move_stepper(speedR, speedL);
 }
 
 bool marker_down;
-void loop()
-{
-    int flex;
-    while (radio.available(&pipeNo)) {                                 // слушаем эфир
+
+void loop() {
+  int flex;
+  while (radio.available(&pipeNo)) {                                 // слушаем эфир
     radio.read( &recieved_data, sizeof(recieved_data));              // чиатем входящий сигнал
-//    Serial.print(recieved_data[0]);
     y = recieved_data[0];
     x = recieved_data[1];
     flex = recieved_data[2];
-        Serial.print("    ");
+    Serial.print("    ");
     Serial.println(recieved_data[2]);
+  }
 
-    }
-
-    if (mode == draw_mode){
-        if (x > 20 && abs(y) < 20) 
-          _move_stepper_f();
-        else if (x < -20 && abs(y) < 20) 
-          _move_stepper_b();
-        else if (abs(x) < 20 && y > 20)
-          _move_stepper_r();
-        else if (abs(x) < 20 && y < -20)
-          _move_stepper_l();
-    } else {
-      moveStepper_draw(x, y);
-    }
-//    for (int i = 180; i > 90; i -= 15) {
-//      delay(700);
-//      servo.write(i);
-//    }
+  if (mode == draw_mode){
+    if (x > 20 && abs(y) < 20) 
+      _move_stepper_f();
+    else if (x < -20 && abs(y) < 20) 
+      _move_stepper_b();
+    else if (abs(x) < 20 && y > 20)
+      _move_stepper_r();
+    else if (abs(x) < 20 && y < -20)
+      _move_stepper_l();
+  } else {
+    moveStepper_draw(x, y);
+  }
 
     
-    if (flex > 350) {
-      servo.write(90);
-    }
-    else { 
-      servo.write(180);
-    }
-//      
-
-    
-//        int forw_back = map(x, -90, 90, -255, 255);
-//        int left_right = map(y, -90, 90, -255, 255);
-//
-////        Serial.println(forw_back); Serial.println(left_right);
-//        Serial.write("\n");
-//        delay(20);
-//        int l = 0;
-//        int r = 0;
-//        if (y > 0){
-//          l = forw_back;
-//          if (l < 255/2) {
-//              r = (255-l) * cos(radians(left_right));
-//          }
-//          
-//          r = l * cos(radians(left_right));
-//        } else {
-//          r = forw_back;
-//          if (r < 255/2) {
-//            l = (255-r) * cos(radians(left_right));
-//          } else 
-//            l = r * cos(radians(left_right));
-//        }
-//        Serial.println(l);
-//        Serial.println(r);
-//        _move_stepper(l, r);
-////        Serial.print(left_speed); Serial.println("  ");
-////        Serial.println(right_speed); Serial.println("  ");
-    
-    
-  
-    
+  if (flex > 350) {
+    servo.write(90);
+  } else {
+    servo.write(180);
+  }
 }

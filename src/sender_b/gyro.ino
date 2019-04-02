@@ -1,4 +1,4 @@
-#include "gyro.h"
+
 void set_last_read_angle_data(unsigned long time, float x, float y, float z, float x_gyro, float y_gyro, float z_gyro) {
   last_read_time = time;
   last_x_angle = x;
@@ -172,7 +172,8 @@ struct angles update_gyro() {
   return angles;
 }
 
-int MPU6050_read(int start, uint8_t *buffer, int size) {
+int MPU6050_read(int start, uint8_t *buffer, int size)
+{
   int i, n, error;
 
   Wire.beginTransmission(MPU6050_I2C_ADDRESS);
@@ -187,7 +188,8 @@ int MPU6050_read(int start, uint8_t *buffer, int size) {
   // Third parameter is true: relase I2C-bus after data is read.
   Wire.requestFrom(MPU6050_I2C_ADDRESS, size, true);
   i = 0;
-  while(Wire.available() && i<size) {
+  while(Wire.available() && i<size)
+  {
     buffer[i++]=Wire.read();
   }
   if ( i != size)
@@ -196,7 +198,8 @@ int MPU6050_read(int start, uint8_t *buffer, int size) {
   return (0);  // return : no error
 }
 
-int MPU6050_write(int start, const uint8_t *pData, int size) {
+int MPU6050_write(int start, const uint8_t *pData, int size)
+{
   int n, error;
 
   Wire.beginTransmission(MPU6050_I2C_ADDRESS);
@@ -215,10 +218,14 @@ int MPU6050_write(int start, const uint8_t *pData, int size) {
   return (0);         // return : no error
 }
 
-int MPU6050_write_reg(int reg, uint8_t data) {
+int MPU6050_write_reg(int reg, uint8_t data)
+{
   int error;
 
   error = MPU6050_write(reg, &data, 1);
 
   return (error);
 }
+
+
+
