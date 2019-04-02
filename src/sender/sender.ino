@@ -41,6 +41,7 @@ void loop()
     Serial.write("Flex -> ");  Serial.println(flexSensorReading);
     transmit_data[0] = angles.x;
     transmit_data[1] = angles.y;
+    transmit_data[2] = flexSensorReading;
     Serial.print(angles.x);
     Serial.print("    ");
     Serial.println(angles.y);

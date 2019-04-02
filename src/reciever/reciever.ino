@@ -3,6 +3,9 @@
 #include <Wire.h>
 #include "nRF24L01.h"
 #include "RF24.h"
+#include <Servo.h>
+
+int servoPin = 4;
 
 // первый двигатель
 
@@ -20,11 +23,15 @@ int in3 = 7;
 
 int in4 = 6;
 
+Servo servo;
+
 void setup()
 {      
   int error;
   uint8_t c;
   Serial.begin(38400);
+  servo.attach(servoPin);
+
 
   radioSetup();
   Wire.begin();
@@ -116,7 +123,7 @@ RF24 radio(9, 10);   // "создать" модуль на пинах 9 и 10 д
 byte pipeNo;
 byte address[][6] = {"1Node", "2Node", "3Node", "4Node", "5Node", "6Node"}; // возможные номера труб
 
-int recieved_data[6];         // массив принятых данных
+int recieved_data[3];         // массив принятых данных
 int telemetry[2];             // массив данных телеметрии (то что шлём на передатчик)
 //--------------------- ПЕРЕМЕННЫЕ ----------------------
 
@@ -349,16 +356,19 @@ void moveStepper_draw(int x, int y)
   
   //_move_stepper(speedR, speedL);
 }
+
+bool marker_down;
 void loop()
 {
-    
+    int flex;
     while (radio.available(&pipeNo)) {                                 // слушаем эфир
     radio.read( &recieved_data, sizeof(recieved_data));              // чиатем входящий сигнал
 //    Serial.print(recieved_data[0]);
     y = recieved_data[0];
     x = recieved_data[1];
-//        Serial.print("    ");
-//    Serial.println(recieved_data[1]);
+    flex = recieved_data[2];
+        Serial.print("    ");
+    Serial.println(recieved_data[2]);
 
     }
 
@@ -374,6 +384,21 @@ void loop()
     } else {
       moveStepper_draw(x, y);
     }
+//    for (int i = 180; i > 90; i -= 15) {
+//      delay(700);
+//      servo.write(i);
+//    }
+
+    
+    if (flex > 350) {
+      servo.write(90);
+    }
+    else { 
+      servo.write(180);
+    }
+//      
+
+    
 //        int forw_back = map(x, -90, 90, -255, 255);
 //        int left_right = map(y, -90, 90, -255, 255);
 //
