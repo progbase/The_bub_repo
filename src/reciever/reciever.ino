@@ -239,34 +239,42 @@ void moveStepper_draw(int x, int y) {
 
 bool marker_down;
 
+String str;
 void loop() {
-  int flex;
+  delay(100);
+  int flex = 400;
   while (radio.available(&pipeNo)) {                                 // слушаем эфир
     radio.read( &recieved_data, sizeof(recieved_data));              // чиатем входящий сигнал
     y = recieved_data[0];
     x = recieved_data[1];
     flex = recieved_data[2];
-    Serial.print("    ");
-    Serial.println(recieved_data[2]);
   }
 
-  if (mode == draw_mode){
-    if (x > 20 && abs(y) < 20) 
-      _move_stepper_f();
-    else if (x < -20 && abs(y) < 20) 
-      _move_stepper_b();
-    else if (abs(x) < 20 && y > 20)
-      _move_stepper_r();
-    else if (abs(x) < 20 && y < -20)
-      _move_stepper_l();
-  } else {
-    moveStepper_draw(x, y);
+  if(mode == draw_mode)
+  {
+    moveStepper_draw(x , y);
+  }
+  else
+  {
+    moveStepper(x, y);
+  } 
+
+
+  flex = flex - flex % 10;
+  Serial.print("    ");
+    Serial.println(flex);
+  if (flex > 375) {
+    servo.write(100);
+  } else if (flex < 350){
+    servo.write(170);
   }
 
-    
-  if (flex > 350) {
-    servo.write(90);
-  } else {
-    servo.write(180);
-  }
+  if (Serial.available() > 0)     // Read data only when you receive data:
+   {
+       int incomingByte = Serial.read();
+ 
+        // отсылаем то, что получили
+        Serial.print("I received: ");
+        Serial.println(incomingByte, DEC);
+   }
 }

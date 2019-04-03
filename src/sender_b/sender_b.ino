@@ -37,7 +37,8 @@ void loop() {
   struct angles angles = update_gyro(); 
   transmit_data[0] = angles.x;
   transmit_data[1] = angles.y;
-  transmit_data[2] = analogRead(flexSensorPin); 
+  transmit_data[2] = analogRead(flexSensorPin); //
+//  transmit_data[2] = 0;
   Serial.print(angles.x);
   Serial.print("    ");
   Serial.println(angles.y);
