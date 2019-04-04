@@ -239,7 +239,6 @@ void moveStepper_draw(int x, int y) {
 
 bool marker_down;
 
-String str;
 void loop() {
   delay(100);
   int flex = 400;
@@ -259,22 +258,32 @@ void loop() {
     moveStepper(x, y);
   } 
 
-
-  flex = flex - flex % 10;
-  Serial.print("    ");
+  if (mode == draw_mode) {
+    flex = flex - flex % 10;
+    Serial.print("    ");
     Serial.println(flex);
-  if (flex > 375) {
-    servo.write(100);
-  } else if (flex < 350){
-    servo.write(170);
+    if (flex > 375) {
+      servo.write(100);
+    }  else if (flex < 350){
+      servo.write(170);
+   }
+  } else {
+     servo.write(100);
   }
+  
 
   if (Serial.available() > 0)     // Read data only when you receive data:
    {
        int incomingByte = Serial.read();
+
  
-        // отсылаем то, что получили
         Serial.print("I received: ");
         Serial.println(incomingByte, DEC);
+        if (incomingByte == 0) {
+          mode = free_mode;
+        } else {
+          mode = draw_mode;
+        }
+        incomingByte = Serial.read();
    }
 }
