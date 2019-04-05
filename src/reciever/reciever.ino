@@ -217,21 +217,21 @@ void moveStepper_draw(int x, int y) {
   int speedR;
   if (x > -20 && x < 20) {
     if (y > 10) {
-      speedR = 100;
-      speedL = -100;
+      speedR = 80;
+      speedL = -80;
     } else if (y < -10) {
-      speedL = 100;
-      speedR = -100;
+      speedL = 80;
+      speedR = -80;
     } else {
       speedL = 0;
       speedR = 0;
     }
   } else if (x >= 20) {
-    speedL = 100;
-    speedR = 100;
+    speedL = 80;
+    speedR = 80;
   } else if (x <= -20) {
-    speedL = -100;
-    speedR = -100;
+    speedL = -80;
+    speedR = -80;
   }
   
   _move_stepper(speedR, speedL);
