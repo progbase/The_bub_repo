@@ -34,6 +34,6 @@ Members:
 [Retrospective](https://docs.google.com/spreadsheets/d/1VcrAvyVyDSEYQVBtpIvg8E9p59kVF-Uw5bZEgzg6eLw/edit#gid=0)
 
 ### *Second sprint artefacts*
-[Plan](https://docs.google.com/document/d/13l-mE4uCjN_lia9rEj3LvmrfmGRbiVxnRNsyEyqFIME/edit)
+[Plan](https://docs.google.com/document/d/13l-mE4uCjN_lia9rEj3LvmrfmGRbiVxnRNsyEyqFIME/edit?usp=sharing)
 
 [Backlog](https://docs.google.com/spreadsheets/d/1Hhfbvf0mXmCzQUOZNcOy67RbeIWsSCX_6Wwh1PhIGYA/edit#gid=221134228)
