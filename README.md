@@ -38,4 +38,4 @@ Members:
 
 [Backlog](https://docs.google.com/spreadsheets/d/1Hhfbvf0mXmCzQUOZNcOy67RbeIWsSCX_6Wwh1PhIGYA/edit#gid=221134228)
 
-[Presentation](https://docs.google.com/presentation/d/1ZhUdoh4IWBNsKFn2ElPsMFt2eywADuxoVrQiZ2wriys/edit#slide=id.g55a7aea3cf_2_7)
+[Presentation](https://docs.google.com/presentation/d/1ZhUdoh4IWBNsKFn2ElPsMFt2eywADuxoVrQiZ2wriys/edit?usp=sharing)
