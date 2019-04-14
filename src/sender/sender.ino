@@ -38,8 +38,8 @@ void loop() {
   transmit_data[0] = angles.x;
   transmit_data[1] = angles.y;
   transmit_data[2] = analogRead(flexSensorPin); //
-//  transmit_data[2] = 0;
-  Serial.print(angles.x);
+
+  Serial.print(angles.x);//to test
   Serial.print("    ");
   Serial.println(angles.y);
   if (radio.write(&transmit_data, sizeof(transmit_data))) {    // отправка пакета transmit_data
