@@ -35,7 +35,7 @@ void setup() {
 
 void loop() {
   struct angles angles = update_gyro(); 
-  transmit_data[0] = angles.x;
+  transmit_data[0] = -angles.x;
   transmit_data[1] = angles.y;
   transmit_data[2] = analogRead(flexSensorPin); //
 
