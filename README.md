@@ -18,7 +18,7 @@ Members:
 
 [Project link](https://github.com/orgs/progbase/projects/4)
 
-[Documentation](https://docs.google.com/document/d/1K1avbO_rs0jCoRjCkBjYlNyUz1cORy8mP3xuC2d_2-0/edit?usp=sharing)
+[Documentation](https://docs.google.com/document/d/1WYGHIPlPiPbSUFRAsX6tqLJgp9Xm0SL3zYe4QEHHu-k/edit?usp=sharing)
 
 [List of details](https://docs.google.com/spreadsheets/d/1plnE3Y03jDTv-EnpPSvEMH51l2hl61MQDM-TylL5SzU/edit?usp=sharing)
 
