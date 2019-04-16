@@ -24,6 +24,7 @@ Members:
 
 [Product backlog](https://docs.google.com/spreadsheets/d/1Hhfbvf0mXmCzQUOZNcOy67RbeIWsSCX_6Wwh1PhIGYA/edit#gid=0)
 
+[Project video](https://www.youtube.com/watch?v=SJdnRqwrf8c)
 ### *First sprint artefacts*
 [PLan](https://docs.google.com/document/d/1_Ja_f6wdD_9d--eG7aTbG2PzhH20mv2FHoL5JJuGS3U/edit)
 
